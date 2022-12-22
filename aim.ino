@@ -106,9 +106,7 @@ DHT dht(DHTPIN, DHTTYPE);
      Smoke = mq2.readSmoke();
      Serial.println("printing each sensor value");
      Serial.println(sizeof(values));
-     for (uint8_t i=0; i< 4; i++){
-      Serial.println(values[i]);
-     }
+    
      Serial.println(Co);
      Serial.println(Smoke);
    delay(1000);
