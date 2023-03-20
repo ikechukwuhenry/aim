@@ -3,6 +3,12 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
+#include "DHT.h"
+#define DHTPIN 2    
+#define DHTTYPE DHT11   // DHT 11
+
+DHT dht(DHTPIN, DHTTYPE);
+
 /* Uncomment the initialize the I2C address , uncomment only one, If you get a totally blank screen try the other*/
 #define i2c_Address 0x3c //initialize with the I2C addr 0x3C Typically eBay OLED's
 //#define i2c_Address 0x3d //initialize with the I2C addr 0x3D Typically Adafruit OLED's
@@ -40,7 +46,7 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 #include <MQ2.h> // MQ2 Gas Sensor Library
   
 //int pinAout = A0; // pin A0 of NodeMcu is connected to pin A0 of MQ-2
-int LPG, Co, Smoke; // Variable values of lpg, CO-gas, and Smoke
+float LPG, Co, Smoke; // Variable values of lpg, CO-gas, and Smoke
 float h, t, f; // Variables values for humidity, temperature in celcius and temperature in fahrenheit
 float count = 0;
 //int sensorValue; 
@@ -51,16 +57,12 @@ String secureUrl3;
 String secureUrl4;
 
 String user = "";
-  #define S0 D0 
-  #define SIG A0
+int S0;
+  #define  D0 
+ #define SIG A0
 
 
-#include "DHT.h"
 
-#define DHTPIN 2    
-#define DHTTYPE DHT11   // DHT 11
-
-DHT dht(DHTPIN, DHTTYPE);
 
   
  
@@ -100,15 +102,16 @@ DHT dht(DHTPIN, DHTTYPE);
     MQ2 mq2(SIG);
      mq2.begin();
     float* values= mq2.read(true); //if set to "false" will not appear on serial monitor
-   
+    Serial.println("accesing the pointer values");
      LPG = mq2.readLPG();
      Co = mq2.readCO();
      Smoke = mq2.readSmoke();
+//     float h= Co;
      Serial.println("printing each sensor value");
      Serial.println(sizeof(values));
     
-     Serial.println(Co);
-     Serial.println(Smoke);
+     Serial.println("Co");
+     Serial.println(Co, 5);
    delay(1000);
     
     digitalWrite(S0,HIGH);
@@ -151,7 +154,8 @@ DHT dht(DHTPIN, DHTTYPE);
     display.display();
     delay(2000);
     display.clearDisplay();
-     delay(1000);   
+     delay(1000); 
+      delay(1000);  
  } 
 
  void displayResults(float t, float h){
@@ -162,13 +166,13 @@ DHT dht(DHTPIN, DHTTYPE);
     display.setTextColor(SH110X_WHITE);
     display.setCursor(0, 0);
     display.write("CO: ");
-    display.print(Co);
+    display.print(Co, 5);
     display.println();
     display.write("Smoke: ");
-    display.print(Smoke);
+    display.print(Smoke, 5);
     display.println();
     display.write("LPG: ");
-    display.print(LPG);
+    display.print(LPG, 5);
     display.println();
     display.write("Temperature:");
     display.print(t);
